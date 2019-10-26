@@ -21,7 +21,7 @@ public class GTGame extends ApplicationAdapter {
 		batch = new PolygonSpriteBatch();
 		img = new Texture("badlogic.jpg");
 		models = new ModelSet();
-		models.add(new Model(new float[] {400.0f, 400.0f, 500.0f, 400.0f, 500.0f, 500.0f, 400.0f, 400.0f}, Color.RED));
+		models.add(new Model(new float[] {400.0f, 400.0f, 500.0f, 400.0f, 500.0f, 500.0f, 400.0f, 400.0f}, Color.BLACK));
 	}
 
 	@Override

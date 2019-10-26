@@ -35,6 +35,7 @@ public class Model {
         System.out.println("Drawing");
         sb.begin();
         polySprite.draw(sb);
+        sb.end();
         System.out.println("Done Drawing");
     }
 
