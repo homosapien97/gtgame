@@ -5,32 +5,37 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.sleepyheads.game.draw.Model;
+import com.sleepyheads.game.draw.ModelSet;
 
 public class GTGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	ShapeRenderer shapeRenderer;
+	PolygonSpriteBatch batch;
 	Texture img;
+	ModelSet models;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		shapeRenderer = new ShapeRenderer();
+		batch = new PolygonSpriteBatch();
 		img = new Texture("badlogic.jpg");
+		models = new ModelSet();
+		models.add(new Model(new float[] {400.0f, 400.0f, 500.0f, 400.0f, 500.0f, 500.0f, 400.0f, 400.0f}, Color.RED));
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+		/*
 		batch.begin();
 		batch.draw(img, 0, 0);
 		batch.end();
-		shapeRenderer.setColor(Color.BLACK);
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.circle(500.0f, 50.0f, 20.0f);
-		shapeRenderer.end();
+		 */
+		for(Model m : models) {
+			m.draw(batch);
+		}
 	}
 	
 	@Override
