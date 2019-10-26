@@ -1,7 +1,7 @@
 package com.sleepyheads.game.entity;
 
 public enum ActionEnum {
-    ATTACK(0), MOVE(1), Q(2), E(3), R(4), F(5);
+    ATTACK(0), MOVE(1), Q(2), W(3), E(4), R(5);
     public final int value;
 
     /**

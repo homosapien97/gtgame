@@ -1,6 +1,8 @@
 package com.sleepyheads.game.entity;
 
-public abstract class Entity{
+import java.util.ArrayList;
+
+public class Entity{
     public boolean alive;           // If currently alive (health > 0)
     public int currentEnergy;       // currentEnergy (if alive == energy, otherwise == 0)
     public int currentHealth;       // currentHealth (if not alive, == 0)
@@ -11,6 +13,8 @@ public abstract class Entity{
     public int locationY;           // current y location
     public String name;             // entity name
     public Entity[] visible;        // list of visible entities
+
+    public ArrayList<Entity> killed;
 
     /**
      * Sets all instance variables.
@@ -33,6 +37,7 @@ public abstract class Entity{
         this.visible = visible;
         assert(listOfActions.length == Settings.lengthOfActions);
         this.listOfActions = listOfActions;
+        killed = new ArrayList<Entity>();
     }
 
     /**
@@ -52,17 +57,21 @@ public abstract class Entity{
      * Decreases health by decrementBy
      * @param decrementBy
      */
-    public void decreaseHP(int decrementBy) {
+    public void decreaseHealth(int decrementBy, Entity source) {
         int newHealth = this.currentHealth - decrementBy;
         if (newHealth <= 0) {
             this.alive = false;
             this.currentEnergy = 0;
             this.currentHealth = 0;
+            source.killed.add(this);
         } else {
             this.currentHealth = newHealth;
         }
     }
 
+    /**
+     * Brings back an entity
+     */
     public void resurrect() {
         this.alive = true;
         this.currentEnergy = this.energy;
