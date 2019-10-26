@@ -73,9 +73,11 @@ public class Entity{
      * Brings back an entity
      */
     public void resurrect() {
-        this.alive = true;
-        this.currentEnergy = this.energy;
-        this.currentHealth = this.health;
+        if (!this.alive) {
+            this.alive = true;
+            this.currentEnergy = this.energy;
+            this.currentHealth = this.health;
+        }
     }
 
     /**
