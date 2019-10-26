@@ -1,17 +1,23 @@
 package com.sleepyheads.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.net.SocketHints;
 import com.sleepyheads.game.draw.Model;
 import com.sleepyheads.game.draw.ModelSet;
+import com.sleepyheads.game.world.World;
 
-public class GTGame extends ApplicationAdapter implements ApplicationListener, InputProcessor {
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Client extends ApplicationAdapter implements ApplicationListener, InputProcessor {
 	PolygonSpriteBatch batch;
 	Texture img;
 	public ModelSet models;
@@ -19,11 +25,17 @@ public class GTGame extends ApplicationAdapter implements ApplicationListener, I
 	int h;
 	float mouseX;
 	float mouseY;
+	Set<Event> events;
+	Server server;
 
-	public GTGame(int w, int h) {
+
+	public Client(int w, int h, Server server) {
 		super();
 		this.w = w;
 		this.h = h;
+		this.server = server;
+		events = new HashSet<>();
+		server.addClient(this);
 	}
 
 	@Override
@@ -42,6 +54,43 @@ public class GTGame extends ApplicationAdapter implements ApplicationListener, I
 				},
 				Color.BLACK));
 		Gdx.input.setInputProcessor(this);
+		ConcurrentHashMap<Event, Object> dummy = new ConcurrentHashMap<>();
+		events = dummy.newKeySet();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Starting Client Thread");
+				SocketHints socketHints = new SocketHints();
+				// Socket will time our in 4 seconds
+				socketHints.connectTimeout = 4000;
+				Socket socket = Gdx.net.newClientSocket(Net.Protocol.TCP, server.address, 9021, socketHints);
+				ObjectOutputStream eventstream = null;
+				try {
+					eventstream = new ObjectOutputStream(socket.getOutputStream());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				assert eventstream != null;
+				// Loop forever
+				while (true) {
+					for (Event e : events) {
+						try {
+							eventstream.writeObject(e);
+						} catch (IOException ex) {
+							ex.printStackTrace();
+						}
+					}
+					events.clear();
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+//		}).run();
+		});
 	}
 
 	@Override
@@ -81,7 +130,17 @@ public class GTGame extends ApplicationAdapter implements ApplicationListener, I
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
+		for(Model model : models) {
+			model.setPosition(screenX, h - screenY);
+		}
+		System.out.println("click");
+		events.add(new Event() {
+			@Override
+			public void happen(World world) {
+				System.out.println("Hello");
+			}
+		});
+		return true;
 	}
 
 	@Override
@@ -98,9 +157,6 @@ public class GTGame extends ApplicationAdapter implements ApplicationListener, I
 	public boolean mouseMoved(int screenX, int screenY) {
 		mouseX = screenX;
 		mouseY = screenY;
-		for(Model model : models) {
-			model.setPosition(screenX, h - screenY);
-		}
 		return true;
 	}
 
