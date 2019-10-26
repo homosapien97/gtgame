@@ -17,13 +17,19 @@ class GActionQ extends Action {
 class GActionW extends Action {
     public void doAction(Entity source, Target target) {
         Random rand = new Random();
-        source.decreaseHealth(source.energy, source);
+        if (rand.nextInt(2) == 1) {
+            source.decreaseHealth(source.energy, source);
+        }
     }
 }
 
 class GActionE extends Action {
     public void doAction(Entity source, Target target) {
-
+        Random rand = new Random();
+        Entity entityTarget = ((EntityTarget) target).entity;
+        if (rand.nextInt(2) == 1) {
+            entityTarget.decreaseHealth(entityTarget.energy, entityTarget);
+        }
     }
 }
 
