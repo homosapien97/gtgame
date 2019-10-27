@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.sleepyheads.game.draw.Polygon;
 import com.sleepyheads.game.draw.Model;
-import com.sleepyheads.game.draw.ModelSet;
+import com.sleepyheads.game.entity.Alice;
+import com.sleepyheads.game.entity.Entity;
 import com.sleepyheads.game.world.World;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -20,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Client extends ApplicationAdapter implements ApplicationListener, InputProcessor {
 	PolygonSpriteBatch batch;
 	Texture img;
-	public ModelSet models;
+	public HashSet<Model> models;
 	int w;
 	int h;
 	float mouseX;
@@ -42,17 +45,24 @@ public class Client extends ApplicationAdapter implements ApplicationListener, I
 	public void create () {
 		batch = new PolygonSpriteBatch();
 		img = new Texture("badlogic.jpg");
-		models = new ModelSet();
-		models.add(new Model(new float[]
-				{
-						-50.0f, -50.0f,
-						50.0f, -50.0f,
-						50.0f, 50.0f,
-						-50.0f, 50.0f,
-						0.0f, 0.0f,
-						-50.0f, -50.0f
-				},
-				Color.BLACK));
+		models = new HashSet<>();
+//		models.add(new Polygon(new float[]
+//				{
+//						-50.0f, -50.0f,
+//						50.0f, -50.0f,
+//						50.0f, 50.0f,
+//						-50.0f, 50.0f,
+//						0.0f, 0.0f,
+//						-50.0f, -50.0f
+//				},
+//				Color.BLACK));
+		//Model alice = new Model("models/alice_main.txt");
+		//alice.setScale(0.5f);
+		World world = new World();
+		world.entities.add(new Alice());
+		server.world = world;
+//		alice.setPosition(200.0f, 200.0f);
+//		alice.setRotation(-90.0f);
 		Gdx.input.setInputProcessor(this);
 		ConcurrentHashMap<Event, Object> dummy = new ConcurrentHashMap<>();
 		events = dummy.newKeySet();
@@ -102,8 +112,11 @@ public class Client extends ApplicationAdapter implements ApplicationListener, I
 		batch.draw(img, 0, 0);
 		batch.end();
 		 */
-		for(Model m : models) {
-			m.draw(batch);
+//		for(Model m : models) {
+//			m.draw(batch);
+//		}
+		for(Entity e : server.world.entities) {
+			e.model.draw(batch);
 		}
 	}
 	
@@ -132,6 +145,9 @@ public class Client extends ApplicationAdapter implements ApplicationListener, I
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		for(Model model : models) {
 			model.setPosition(screenX, h - screenY);
+		}
+		for(Entity e : server.world.entities) {
+			e.model.setPosition(screenX, h - screenY);
 		}
 		System.out.println("click");
 		events.add(new Event() {

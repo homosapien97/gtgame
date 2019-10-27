@@ -1,5 +1,7 @@
 package com.sleepyheads.game.entity;
 
+import com.sleepyheads.game.draw.Model;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,6 +49,6 @@ class MHActionR extends Action {
 
 public class MadHatter extends Entity{
     public MadHatter() {
-        super("MadHatter", 10, 10, new Action[]{new Attack(), new Move(), new MHActionQ(), new MHActionW(), new MHActionE(), new MHActionR()}, 0, 0, null);
+        super("MadHatter", 10, 10, new Action[]{new Attack(), new Move(), new MHActionQ(), new MHActionW(), new MHActionE(), new MHActionR()}, 0, 0, null, new Model("models/hatter_main.txt"));
     }
 }

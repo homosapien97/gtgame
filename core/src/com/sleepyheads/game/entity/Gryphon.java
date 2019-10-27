@@ -1,5 +1,7 @@
 package com.sleepyheads.game.entity;
 
+import com.sleepyheads.game.draw.Model;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,6 +49,6 @@ class GActionR extends Action {
 
 public class Gryphon extends Entity {
     public Gryphon() {
-        super("Gryphon", 10, 10, new Action[]{new Attack(), new Move(), new GActionQ(), new GActionW(), new GActionE(), new GActionR()}, 0, 0, null);
+        super("Gryphon", 10, 10, new Action[]{new Attack(), new Move(), new GActionQ(), new GActionW(), new GActionE(), new GActionR()}, 0, 0, null, new Model("models/griffin.txt"));
     }
 }

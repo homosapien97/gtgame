@@ -1,5 +1,7 @@
 package com.sleepyheads.game.entity;
 
+import com.sleepyheads.game.draw.Model;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,6 +49,6 @@ class CCActionR extends Action {
 
 public class CheshireCat extends Entity {
     public CheshireCat() {
-        super("CheshireCat", 10, 10, new Action[]{new Attack(), new Move(), new CCActionQ(), new CCActionW(), new CCActionE(), new CCActionR()}, 0, 0, null);
+        super("CheshireCat", 10, 10, new Action[]{new Attack(), new Move(), new CCActionQ(), new CCActionW(), new CCActionE(), new CCActionR()}, 0, 0, null, new Model("models/cat_main.txt"));
     }
 }

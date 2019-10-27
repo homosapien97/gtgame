@@ -1,5 +1,7 @@
 package com.sleepyheads.game.entity;
 
+import com.sleepyheads.game.draw.Model;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -46,7 +48,8 @@ class AActionR extends Action {
 }
 
 public class Alice extends Entity {
+
     public Alice() {
-        super("Alice", 10, 10, new Action[]{new Attack(), new Move(), new AActionQ(), new AActionW(), new AActionE(), new AActionR()}, 0, 0, null);
+        super("Alice", 10, 10, new Action[]{new Attack(), new Move(), new AActionQ(), new AActionW(), new AActionE(), new AActionR()}, 0, 0, null, new Model("models/alice_main.txt"));
     }
 }

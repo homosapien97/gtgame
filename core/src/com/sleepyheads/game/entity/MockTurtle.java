@@ -1,5 +1,7 @@
 package com.sleepyheads.game.entity;
 
+import com.sleepyheads.game.draw.Model;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,6 +49,6 @@ class MTActionR extends Action {
 
 public class MockTurtle extends Entity{
     public MockTurtle() {
-        super("MockTurtle", 10, 10, new Action[]{new Attack(), new Move(), new MTActionQ(), new MTActionW(), new MTActionE(), new MTActionR()}, 0, 0, null);
+        super("MockTurtle", 10, 10, new Action[]{new Attack(), new Move(), new MTActionQ(), new MTActionW(), new MTActionE(), new MTActionR()}, 0, 0, null, new Model("models/turtle.txt"));
     }
 }

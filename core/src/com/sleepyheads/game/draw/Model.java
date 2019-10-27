@@ -1,43 +1,54 @@
 package com.sleepyheads.game.draw;
 
-
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.utils.ShortArray;
 
-public class Model {
-    private float[] points;
-    private Color color;
-    private float x;
-    private float y;
-    private float rotation;
-    private float scale;
-    private EarClippingTriangulator earClipper = new EarClippingTriangulator();
-    private ShortArray triangleIndices;
-    private PolygonSprite polySprite;
-    private PolygonSprite transformedPolySprite;
+import java.io.*;
+import java.util.HashSet;
 
-    public Model() {
-        this(new float[0], Color.BLACK);
+public class Model extends HashSet<Polygon> {
+    float x;
+    float y;
+    float rotation;
+    float scale;
+    public Model(String modelFilePath) {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(modelFilePath));
+            String viewport = br.readLine();
+            String[] vpxy = viewport.trim().split(" ");
+            float height = Float.parseFloat(vpxy[3].trim());
+            br.readLine();//empty
+            String line = br.readLine();
+            while(line != null) {
+                line = line.substring(8,line.length()-1);
+                String[] ptstrings = line.trim().split(",");
+                float[] pts = new float[ptstrings.length * 2 + 2];
+                for(int i = 0; i < ptstrings.length; i++) {
+                    String[] xystring = ptstrings[i].trim().split(" ");
+                    for(String s : xystring) {
+                        System.out.println("-"+s);
+                    }
+                    if(xystring.length != 2) break;
+                    pts[2*i] = Float.parseFloat(xystring[0]) - height / 2.0f;
+                    pts[2*i+1] = (height - Float.parseFloat(xystring[1])) - height / 2.0f;
+                }
+                pts[pts.length - 2] = pts[0];
+                pts[pts.length - 1] = pts[1];
+                Color color = Color.BLACK;//TODO temp
+                this.add(new Polygon(pts, color));
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        x = 0.0f;
+        y = 0.0f;
     }
-
-    public Model(float[] points, Color color) {
-        this(points, color, 0.0f, 0.0f, 0.0f, 1.0f);
-    }
-
-    public Model(float[] points, Color color, float x, float y, float rotation, float scale) {
-        this.points = points;
-        this.color = color;
-        triangleIndices = earClipper.computeTriangles(points);
-        polySprite = new PolygonSprite(new PolygonRegion(new TextureRegion(Colors.COLORS.get(color)), points, triangleIndices.toArray()));
-        this.x = x;
-        this.y = y;
-        this.rotation = rotation;
-        this.scale = scale;
+    public void draw(PolygonSpriteBatch sb) {
+        for(Polygon p : this) {
+            p.draw(sb, x, y, rotation, scale);
+        }
     }
 
     public void setPosition(float x, float y) {
@@ -49,30 +60,5 @@ public class Model {
     }
     public void setScale(float scale) {
         this.scale = scale;
-    }
-
-    /**
-     * Draws this model with the given shape renderer
-     * @param sb
-     */
-    public void draw(PolygonSpriteBatch sb) {
-        transformedPolySprite = new PolygonSprite(polySprite);
-        transformedPolySprite.translate(x, y);
-        transformedPolySprite.setRotation(rotation);
-        transformedPolySprite.setScale(scale);
-        sb.begin();
-        transformedPolySprite.draw(sb);
-        sb.end();
-    }
-
-    public void setPoints(float[] points) {
-        this.points = points;
-        triangleIndices = earClipper.computeTriangles(points);
-        polySprite = new PolygonSprite(new PolygonRegion(new TextureRegion(Colors.COLORS.get(color)), points, triangleIndices.toArray()));
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-        polySprite = new PolygonSprite(new PolygonRegion(new TextureRegion(Colors.COLORS.get(color)), points, triangleIndices.toArray()));
     }
 }

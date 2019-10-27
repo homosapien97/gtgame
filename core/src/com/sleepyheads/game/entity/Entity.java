@@ -1,5 +1,7 @@
 package com.sleepyheads.game.entity;
 
+import com.sleepyheads.game.draw.Model;
+
 import java.util.ArrayList;
 
 public class Entity{
@@ -13,6 +15,7 @@ public class Entity{
     public int locationY;           // current y location
     public String name;             // entity name
     public Entity[] visible;        // list of visible entities
+    public Model model;
 
     public ArrayList<Entity> killed;
 
@@ -26,7 +29,7 @@ public class Entity{
      * @param initialY
      * @param visible
      */
-    public Entity(String name, int health, int energy, Action[] listOfActions, int initialX, int initialY, Entity[] visible) {
+    public Entity(String name, int health, int energy, Action[] listOfActions, int initialX, int initialY, Entity[] visible, Model model) {
         this.name = name;
         this.health = health;
         this.currentHealth = health;
@@ -38,6 +41,7 @@ public class Entity{
         assert(listOfActions.length == Settings.lengthOfActions);
         this.listOfActions = listOfActions;
         killed = new ArrayList<Entity>();
+        this.model = model;
     }
 
     /**
